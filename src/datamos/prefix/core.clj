@@ -1,4 +1,4 @@
-(ns prefix-component.core
+(ns datamos.prefix.core
   "Prefix URI mapping for dataMos platform
 
   base URI model in dataMos:
@@ -19,12 +19,15 @@
 
   Prefixes refer to URI's up until the last slash ('/') So prefixes only refer to:
   http:// {domain} / {category} / {type} /"
-  (:gen-class)
   (:require [datamos
              [core :as dc]
              [communication :as dcom]
              [base :as base]
-             [mount.core :as mnt :refer [defstate]]]))
+             [sign-up :as sup]
+             [module-helpers :as hlp]]
+            [mount.core :as mnt :refer [defstate]]
+            [taoensso.timbre :as log]
+            [taoensso.timbre.appenders.core :as appenders]))
 
 ; TODO - Create the main registry for prefixes in dataMos
 ; TODO - Create helper function in dataMos to retrieve keyword namespaces from messages
@@ -33,6 +36,7 @@
 ; TODO - Create helper functions in dataMos to add prefixes to messages
 ; TODO - Register prefix module and functions
 
+(def remote-components (atom {}))
 
 (def known-prefixes
   {:datamos "http://ld.datamos.org/data/id/"
@@ -55,15 +59,21 @@
                                (filter keyword?
                                        (tree-seq coll? seq
                                                  rdf-map)))))))
+(defn local-register
+  []
+  @remote-components)
 
-(def component-fns {:datamos/registration datamos.config.core/registration
-                    :datamos/registry     datamos.config.core/register
-                    :datamos/de-register  datamos.config.core/de-register})
+(defn match-prefix
+  [_ _ message]
+  (println message))
+
+(def component-fns (merge {:datamos/match-prefix datamos.prefix.core/match-prefix}
+                          (hlp/local-module-register remote-components)))
 
 (base/component-function {:datamos-cfg/module-type :datamos-fn/core
-                          :datamos-cfg/module-fn   :datamos-fn/registry
-                          :datamos-cfg/local-register (datamos.config.core/local-register)
-                          :dms-def/provides           datamos.config.core/component-fns})
+                          :datamos-cfg/module-fn   :datamos-fn/prefix
+                          :datamos-cfg/local-register (datamos.prefix.core/local-register)
+                          :dms-def/provides           datamos.prefix.core/component-fns})
 
 (defn -main
   "Initializes datamos.core. Configures the exchange"
