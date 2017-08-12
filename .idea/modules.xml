@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/prefix-component.iml" filepath="$PROJECT_DIR$/prefix-component.iml" />
+      <module fileurl="file://$PROJECT_DIR$/datamos.prefix.iml" filepath="$PROJECT_DIR$/datamos.prefix.iml" />
     </modules>
   </component>
 </project>
