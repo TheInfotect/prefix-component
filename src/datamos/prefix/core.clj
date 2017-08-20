@@ -36,9 +36,10 @@
              [module-helpers :as hlp]
              [rdf-function :as rdf-fn]
              [messaging :as dm]]
-            [mount.core :as mnt :refer [defstate]]
+            [mount.core :as mnt :refer [defstate stop start]]
             [taoensso.timbre :as log]
-            [taoensso.timbre.appenders.core :as appenders]))
+            [taoensso.timbre.appenders.core :as appenders]
+            [clojure.tools.namespace.repl :refer [refresh]]))
 
 ; TODO - Create the main registry for prefixes in dataMos
 ; TODO - Send message with prefix keywords to prefix module
@@ -97,14 +98,6 @@
 
 (def ^:private message-header-generic-subjects-set #{{} :dms-def/message})
 
-(defn get-prefixes
-  [rdf-map]
-  (select-keys @prefixes
-               (map keyword
-                    (set (keep namespace
-                               (filter keyword?
-                                       (tree-seq coll? seq
-                                                 rdf-map)))))))
 (defn local-register
   []
   @remote-components)
@@ -144,8 +137,32 @@
                           :datamos/local-register (datamos.prefix.core/local-register)
                           :dms-def/provides       datamos.prefix.core/component-fns})
 
+(defn go
+  []
+  (do
+    (log/merge-config!
+      {:appenders
+       {:println {:min-level :info}
+        :spit (merge (appenders/spit-appender {:fname "log/datamos.log"})
+                     {:min-level :trace})}}))
+  (reset! prefixes known-prefixes)
+  (log/info "@go - Starting dataMos - by Prefix Module")
+  (start)
+  (log/info "@go - dataMos Running - by Prefix Module"))
+
+(defn stp
+  []
+  (do
+    (stop)
+    (log/info "@stop - dataMos has stopped")))
+
+(defn reset
+  []
+  (do
+    (stp)
+    (refresh :after 'datamos.prefix.core/go)))
+
 (defn -main
   "Initializes datamos.core. Configures the exchange"
   [& args]
-  (reset! prefixes known-prefixes)
-  (dc/reset))
+  (reset))
