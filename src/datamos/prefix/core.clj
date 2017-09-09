@@ -91,6 +91,9 @@
    :dmscfg-def  "http://ld.datamos.org/config/def/"
    :datamos-fn  "http://ld.datamos.org/function/id/"
    :dmsfn-def   "http://ld.datamos.org/function/def/"
+   :datamos-var "http://ld.datamos.org/variable/id/"
+   :datamos-qry "http://ld.datamos.org/query/id/"
+   :dmsqry-def  "http://ld.datamos.org/query/def/"
    :rdfs        "http://www.w3.org/2000/01/rdf-schema#"
    :rdf         "http://www.w3.org/1999/02/22-rdf-syntax-ns#"})
 
