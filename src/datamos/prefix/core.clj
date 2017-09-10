@@ -41,47 +41,6 @@
             [taoensso.timbre.appenders.core :as appenders]
             [clojure.tools.namespace.repl :refer [refresh]]))
 
-; TODO - Create the main registry for prefixes in dataMos
-; TODO - Send message with prefix keywords to prefix module
-;      - procedure:
-;      - have message content
-;      - have message ID (message is complete)
-;      - promise that the prefixes for this message will be delivered
-;      - get namespaces
-;      - build message with message ID and namespaces
-;      - speak the message with namespaces
-;      - test for prefix message to not have namespace - prefix loop.
-;      - receive namespaces by prefix module
-;      - match namespaces against prefix register
-;      - return prefixes
-;      - add prefixes to message
-; Dependencies for getting messages with a prefix list:
-;      - The entities are [namespace list =NL] [namespace message =NSM] [message ID =MID] [full message =FM]
-;                         [message prefixes =MP] [message header = MH] [message content =MC]
-;      - Use [MC] to get [NL]
-;      - [MID] is required to match [MP] with [FM]
-;      - Send [NSM] with [NL] and [MID]
-;      - [MH] contains [MID]
-;      - Retrieve [MP] and match against [MID] in [MH] or [FM]
-;      - Send [FM] that contains {MC] [MP} and [MH]
-; So this would be the execution order
-;      - Get [NL] from [MC]
-;      - Generate [MID]
-;      - Send [NSM] with [NL] and [MID] (future)
-;      - Make [FM] containing [MC] and [MH]
-;      - Make [MID] part of [MH]
-;      - Add [MP] to [FM] by requesting [FM] by [MID]
-; Main idea:
-;      - Get namespace list from content
-;      - Generate message ID
-;      - Send match prefix request
-;      - Make full message
-;      - Store full message
-;      - Retrieve full message by MID sent with prefix match message
-; TODO - Retrieve message contents with prefix keywords
-; TODO - Create helper functions in dataMos to add prefixes to messages
-; TODO - Register prefix module and functions
-
 (def remote-components (atom {}))
 
 (def known-prefixes
